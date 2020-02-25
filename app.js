@@ -1,13 +1,16 @@
 const fileInput = document.querySelector('#file')
 const scaleInput = document.querySelector('#scale')
 
-fileInput.addEventListener('input', renderPPM)
-scaleInput.addEventListener('input', renderPPM)
+fileInput.addEventListener('change', renderPPM)
+scaleInput.addEventListener('change', renderPPM)
 
 function renderPPM () {
   if (fileInput.files.length !== 1) return
-  fileInput.files[0].text().then(ppm => {
-    const tokens = ppm.replace(/#.*/g, '').split(/\W+/)
+
+  const reader = new FileReader()
+
+  reader.onload = event => {
+    const tokens = event.target.result.replace(/#.*/g, '').split(/\W+/)
     let idx = 0
 
     const scale = parseInt(scaleInput.value)
@@ -35,5 +38,7 @@ function renderPPM () {
         ctx.fillRect(x * scale, y * scale, scale, scale)
       }
     }
-  })
+  }
+
+  reader.readAsText(fileInput.files[0])
 }
